@@ -1,7 +1,0 @@
-bin
-.gitignore
-.gradle
-.settings
-.classpath
-.project
-build.gradle
