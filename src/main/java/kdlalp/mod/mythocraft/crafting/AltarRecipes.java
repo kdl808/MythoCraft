@@ -40,9 +40,6 @@ public class AltarRecipes
         for(int i = 0; i < this.recipes.size(); i++)
         {
             IAltarRecipe recipe = recipes.get(i);
-            /*System.out.printf("Ichor:%d/%d%n", inv.getIchor(), recipe.ichorRequired());//XXX
-            System.out.printf("Tier:%d/%d%n", MythoPlayer.tier(player), recipe.tierRequired());//XXX
-            System.out.printf("Result:%s; %b%n", recipe.getResult(inv), recipe.matches(player, inv));//XXX*/
 
             if(inv.getIchor() >= recipe.ichorRequired() && MythoPlayer.tier(player) >= recipe.tierRequired() && recipe.matches(player, inv))
             {
@@ -82,9 +79,9 @@ public class AltarRecipes
             }
         }
 
-        HashMap hashmap;
+        HashMap<Character, ItemStack> hashmap;
 
-        for (hashmap = new HashMap(); i < p_92103_2_.length; i += 2)
+        for (hashmap = new HashMap<Character, ItemStack>(); i < p_92103_2_.length; i += 2)
         {
             Character character = (Character)p_92103_2_[i];
             ItemStack itemstack1 = null;
@@ -126,7 +123,7 @@ public class AltarRecipes
 
     public void addShapelessRecipe(ItemStack p_77596_1_, int tierReward, int tierRequired, int ichorCost, Object ... p_77596_2_)
     {
-        ArrayList arraylist = new ArrayList();
+        ArrayList<ItemStack> arraylist = new ArrayList<ItemStack>();
         Object[] aobject = p_77596_2_;
         int i = p_77596_2_.length;
 
@@ -159,7 +156,7 @@ public class AltarRecipes
     /**
      * returns the List<> of all recipes
      */
-    public List getRecipeList()
+    public List<IAltarRecipe> getRecipeList()
     {
         return this.recipes;
     }

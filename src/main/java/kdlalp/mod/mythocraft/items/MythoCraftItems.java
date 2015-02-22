@@ -34,7 +34,7 @@ public class MythoCraftItems
 				}
 		        return flag;
 		    }
-		}.setMaxStackSize(512), "ichor");
+		}/*.setMaxStackSize(256)*/, "ichor");
 		obsidianShard = RegistryHelper.registerItem("obsidianShard");
 		duskIron = RegistryHelper.registerItem("duskIron");
 		dawnGold = RegistryHelper.registerItem("dawnGold");

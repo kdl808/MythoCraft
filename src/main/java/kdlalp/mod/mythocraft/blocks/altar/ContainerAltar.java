@@ -78,7 +78,7 @@ public class ContainerAltar extends Container
     public void onCraftMatrixChanged(IInventory p_75130_1_)
     {
     	IAltarRecipe recipe = AltarRecipes.getInstance().findMatchingRecipe(craftMatrix, player);
-        craftResult.setInventorySlotContents(0, recipe != null ? recipe.getResult(craftMatrix) : CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
+        craftResult.setInventorySlotContents(0, recipe != null ? recipe.getResult(craftMatrix).copy() : CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
         craftResult.setRecipe(recipe);
     }
 

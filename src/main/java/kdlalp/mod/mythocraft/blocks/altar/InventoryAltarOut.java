@@ -92,7 +92,6 @@ public class InventoryAltarOut implements IInventory
     @Override
     public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
     {
-    	System.out.println(p_70299_2_);//XXX
     	stackList[p_70299_1_] = p_70299_2_;
     }
 

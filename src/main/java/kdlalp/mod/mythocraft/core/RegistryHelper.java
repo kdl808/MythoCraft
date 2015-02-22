@@ -21,8 +21,7 @@ public class RegistryHelper
     	{
     		item = new Item();
     	}
-        item = item.setUnlocalizedName(name).setTextureName(ModInfo.MODID + ":" + name).setCreativeTab(MythoCraftMod.tabMythoCraftItems);
-        GameRegistry.registerItem(item, name);
+        GameRegistry.registerItem(item.setUnlocalizedName(name).setTextureName(ModInfo.MODID + ":" + name).setCreativeTab(MythoCraftMod.tabMythoCraftItems), name);
         return item;
     }
 }

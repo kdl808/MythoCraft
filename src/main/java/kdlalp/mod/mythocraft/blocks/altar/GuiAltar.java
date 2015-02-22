@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiAltar extends GuiContainer
 {
-    private static final ResourceLocation altarGuiTextures = new ResourceLocation("textures/gui/container/crafting_table.png");//TODO: Change texture: "mythocraft:textures/gui/container/altar.png");
+    private static final ResourceLocation altarGuiTextures = new ResourceLocation("mythocraft:textures/gui/container/altar.png");
 
     public GuiAltar(InventoryPlayer p_i1084_1_, World p_i1084_2_, int p_i1084_3_, int p_i1084_4_, int p_i1084_5_)
     {

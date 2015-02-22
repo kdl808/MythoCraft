@@ -18,17 +18,14 @@ public class SlotAltarCrafting extends SlotCrafting
 	}
 	
 	@Override
-	public void onPickupFromSlot(EntityPlayer p_82870_1_, ItemStack p_82870_2_)
+	public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
     {
-		System.out.println(p_82870_2_);//XXX
         IAltarRecipe r = ((InventoryAltarOut)inventory).getRecipe();
         if(r != null)
         {
-        	System.out.printf("Tier + (%d): %d -> %d%n", r.getTierIncrease(), MythoPlayer.tier(p_82870_1_), MythoPlayer.tier(p_82870_1_) + r.getTierIncrease());//XXX
-        	System.out.printf("Ichor - %d: %d -> %d%n", r.ichorRequired(), matrix.getIchor(), matrix.getIchor() - r.ichorRequired());//XXX
-	        MythoPlayer.addTier(p_82870_1_, r.getTierIncrease());
+	        MythoPlayer.addTier(player, r.getTierIncrease());
 	        matrix.consumeIchor(r.ichorRequired());
         }
-        super.onPickupFromSlot(p_82870_1_, p_82870_2_);
+        super.onPickupFromSlot(player, stack);
     }
 }
