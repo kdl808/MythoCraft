@@ -1,0 +1,16 @@
+fluid.ichor=Ichor
+block.fluid_ichor.name=Liquid Ichor
+item.bucket_ichor.name=Ichor Bucket
+
+item.ichor.name=Ichor
+item.obsidianShard.name=Obsidian Shard
+item.duskIron.name=Dusk Iron Ingot
+item.dawnGold.name=Dawn Gold Ingot
+
+block.altar.name=Altar
+
+container.mythoAltar=Altar
+
+label.tier=Tier
+
+tooltip.ichorLevel=Ichor: %0$d (Fluid: %1$d; Solid: %2$d)

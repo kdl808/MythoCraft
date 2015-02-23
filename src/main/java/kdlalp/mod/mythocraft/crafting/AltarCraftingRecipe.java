@@ -25,9 +25,9 @@ public class AltarCraftingRecipe implements IAltarRecipe
 	}
 
 	@Override
-	public ItemStack getResult(InventoryAltarIn craftMatrix)
+	public ItemStack[] getResults(InventoryAltarIn craftMatrix)
 	{
-		return pattern.getRecipeOutput();
+		return new ItemStack[]{pattern.getRecipeOutput()};
 	}
 
 	@Override

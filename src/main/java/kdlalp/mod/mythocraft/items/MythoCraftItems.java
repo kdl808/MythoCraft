@@ -1,5 +1,7 @@
 package kdlalp.mod.mythocraft.items;
 
+import kdlalp.mod.mythocraft.blocks.MythoCraftBlocks;
+import kdlalp.mod.mythocraft.blocks.altar.TileEntityAltar;
 import kdlalp.mod.mythocraft.core.MythoPlayer;
 import kdlalp.mod.mythocraft.core.RegistryHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,27 +12,37 @@ import net.minecraft.world.World;
 
 public class MythoCraftItems
 {
-	public static Item ichor;
+	public static Item solidIchor;
+	public static Item bucketIchor;
 	public static Item obsidianShard;
 	public static Item duskIron;
 	public static Item dawnGold;
 	
 	public static void init()
 	{
-		ichor = RegistryHelper.registerItem(new Item(){
+		solidIchor = RegistryHelper.registerItem(new Item(){
 			@Override
-		    public boolean onItemUse(ItemStack p_77648_1_, EntityPlayer p_77648_2_, World p_77648_3_, int p_77648_4_, int p_77648_5_, int p_77648_6_, int p_77648_7_, float p_77648_8_, float p_77648_9_, float p_77648_10_)
+		    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_)
 		    {
 				boolean flag = false;
-				if(p_77648_2_.isSneaking())
+				TileEntityAltar altar = null;
+				if(world.getBlock(x, y, z) == MythoCraftBlocks.altar)
+				{
+					altar = (TileEntityAltar)world.getTileEntity(x, y, z);
+				}
+				if(altar == null && player.isSneaking())
 				{
 					flag = true;
-					MythoPlayer.addTier(p_77648_2_, -1 * MythoPlayer.tier(p_77648_2_));
+					MythoPlayer.addTier(player, -1 * MythoPlayer.tier(player));
 				}
-				if(p_77648_3_.isRemote)
+				if(world.isRemote)
 				{
-					p_77648_2_.addChatMessage(new ChatComponentText(String.format("%s has a tier of %d", p_77648_2_.getCommandSenderName(), MythoPlayer.tier(p_77648_2_))));
-					p_77648_2_.addChatMessage(new ChatComponentText("Item in slot 9 = " + p_77648_2_.inventory.getStackInSlot(9)));
+					player.addChatMessage(new ChatComponentText(String.format("%s has a tier of %d", player.getCommandSenderName(), MythoPlayer.tier(player))));
+					if(altar != null)
+					{
+						player.addChatMessage(new ChatComponentText(String.format("Ichor=%d (Fluid=%d; Items=%d", altar.getTotalIchor(), altar.getFluidIchor(), altar.getItemIchor())));
+						flag = true;
+					}
 				}
 		        return flag;
 		    }

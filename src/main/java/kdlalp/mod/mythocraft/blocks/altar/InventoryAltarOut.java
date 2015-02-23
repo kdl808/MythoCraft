@@ -1,5 +1,7 @@
 package kdlalp.mod.mythocraft.blocks.altar;
 
+import scala.actors.threadpool.Arrays;
+import kdlalp.mod.mythocraft.core.MythoPlayer;
 import kdlalp.mod.mythocraft.crafting.IAltarRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -9,12 +11,15 @@ public class InventoryAltarOut implements IInventory
 {
 	/** List of the stacks in the crafting matrix. */
     private ItemStack[] stackList;
+    /** Player using this Inventory */
+    private EntityPlayer thePlayer;
     /** Current IAltarRecipe */
     private IAltarRecipe recipe;
     
-    public InventoryAltarOut(int numSlots)
+    public InventoryAltarOut(EntityPlayer player, int numSlots)
     {
     	stackList = new ItemStack[numSlots];
+    	thePlayer = player;
     	recipe = null;
     }
 
@@ -59,13 +64,20 @@ public class InventoryAltarOut implements IInventory
      * new stack.
      */
     @Override
-    public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_)
+    public ItemStack decrStackSize(int slot, int amount)
     {
-        if(stackList[p_70298_1_] != null)
+        if(stackList[slot] != null)
         {
-            ItemStack itemstack = stackList[p_70298_1_];
-            stackList[p_70298_1_] = null;
-            return itemstack;
+            ItemStack stack = stackList[slot];
+            if(stack.stackSize > amount)
+            {
+            	stack.stackSize -= amount;
+            	ItemStack s1 = stack.copy();
+            	s1.stackSize = amount;
+            	return s1;
+            }
+            stackList[slot] = null;
+            return stack;
         }
         return null;
     }
@@ -75,12 +87,12 @@ public class InventoryAltarOut implements IInventory
      * like when you close a workbench GUI.
      */
     @Override
-    public ItemStack getStackInSlotOnClosing(int p_70304_1_)
+    public ItemStack getStackInSlotOnClosing(int slot)
     {
-        if(stackList[p_70304_1_] != null)
+        if(stackList[slot] != null)
         {
-            ItemStack itemstack = stackList[p_70304_1_];
-            stackList[p_70304_1_] = null;
+            ItemStack itemstack = stackList[slot];
+            stackList[slot] = null;
             return itemstack;
         }
         return null;
@@ -134,14 +146,41 @@ public class InventoryAltarOut implements IInventory
     {
         return true;
     }
-
-	public void setRecipe(IAltarRecipe r)
+    
+    public void setRecipe(IAltarRecipe r, InventoryAltarIn craftMatrix, ItemStack... fallback)
 	{
 		recipe = r;
+		if(recipe != null && MythoPlayer.tier(thePlayer) >= recipe.tierRequired() && craftMatrix.getIchor() >= recipe.ichorRequired())
+		{
+			setResults(((IAltarRecipe)r).getResults(craftMatrix));
+		}
+		else if(fallback != null && fallback.length > 0)
+		{
+			setResults(fallback);
+		}
+		else
+		{
+			setResults(new ItemStack[0]);
+		}
 	}
 
-	public IAltarRecipe getRecipe()
+	public IAltarRecipe getAltarRecipe()
 	{
-		return recipe;
+		return recipe instanceof IAltarRecipe ? (IAltarRecipe)recipe : null;
 	}
+	
+	private void setResults(ItemStack[] stacks)
+	{
+		for(int i = 0; i < stackList.length; i++)
+		{
+			if(i >= stacks.length || stacks[i] == null)
+			{
+				stackList[i] = null;
+			}
+			else
+			{
+				stackList[i] = stacks[i].copy();
+			}
+		}
+ 	}
 }

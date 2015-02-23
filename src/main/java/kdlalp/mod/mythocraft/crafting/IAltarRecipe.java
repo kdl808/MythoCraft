@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public interface IAltarRecipe
 {
-	public ItemStack getResult(InventoryAltarIn inv);
+	public ItemStack[] getResults(InventoryAltarIn inv);
 
 	public int getTierIncrease();
 	

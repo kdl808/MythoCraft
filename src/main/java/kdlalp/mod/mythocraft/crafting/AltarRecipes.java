@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import kdlalp.mod.mythocraft.blocks.altar.InventoryAltarIn;
-import kdlalp.mod.mythocraft.core.MythoPlayer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -41,7 +40,7 @@ public class AltarRecipes
         {
             IAltarRecipe recipe = recipes.get(i);
 
-            if(inv.getIchor() >= recipe.ichorRequired() && MythoPlayer.tier(player) >= recipe.tierRequired() && recipe.matches(player, inv))
+            if(recipe.matches(player, inv))//Moved ichor and tier requirement checks to InventoryAltarOut to allow the Altar GUI bars to work
             {
                 return recipe;
             }

@@ -1,43 +1,44 @@
 package kdlalp.mod.mythocraft.blocks.altar;
 
-import kdlalp.mod.mythocraft.items.MythoCraftItems;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
 public class InventoryAltarIn extends InventoryCrafting
 {
-    /*/** Name given through use of an anvil
-    private String name;*/
+	/** Altar instance */
+	private TileEntityAltar altar;
     /** Stack of Ichor. */
     private ItemStack ichorStack;
     /** Index of Ichor Slot. */
-    private int isIndex;
+    private int ichorIndex;
     /** Class containing the callbacks for the events on_GUIClosed and on_CraftMaxtrixChanged. */
-    private Container eventHandler;
+    private ContainerAltar eventHandler;
 
-    public InventoryAltarIn(Container p_i1807_1_, int p_i1807_2_, int p_i1807_3_)
+    public InventoryAltarIn(ContainerAltar c, TileEntityAltar tile, int width, int height)
     {
-        super(p_i1807_1_, p_i1807_2_, p_i1807_3_);
-        eventHandler = p_i1807_1_;
-        isIndex = p_i1807_2_ * p_i1807_3_;
+        super(c, width, height);
+        eventHandler = c;
+        altar = tile;
+        ichorIndex = width * height;
         ichorStack = null;
+        eventHandler.ignoreChanges = true;
+        for(int i = 0; i < getSizeInventory(); i++)
+        {
+        	setInventorySlotContents(i, altar.getStackInSlot(i));
+        }
+        eventHandler.ignoreChanges = false;
     }
 
-    /**
-     * Returns the number of slots in the inventory.
-     */
+    @Override
     public int getSizeInventory()
     {
         return super.getSizeInventory();
     }
 
-    /**
-     * Returns the stack in slot i
-     */
-    public ItemStack getStackInSlot(int p_70301_1_)
+    @Override
+    public ItemStack getStackInSlot(int slot)
     {
-        return p_70301_1_ == isIndex ? ichorStack : super.getStackInSlot(p_70301_1_);
+        return slot == ichorIndex ? ichorStack : super.getStackInSlot(slot);
     }
     
     /**
@@ -45,43 +46,24 @@ public class InventoryAltarIn extends InventoryCrafting
      */
     public int getIchor()
     {
-    	return ichorStack != null ? ichorStack.stackSize : 0;
+    	return altar.getTotalIchor();
     }
 
-	public void consumeIchor(int i)
+	public void consumeIchor(int amount)
 	{
-		if(ichorStack != null)
-		{
-			decrStackSize(isIndex, i);
-			eventHandler.onCraftMatrixChanged(this);
-		}
+		altar.consumeIchor(amount);
 	}
 
-    /**
-     * Returns the name of the inventory
-     */
     @Override
     public String getInventoryName()
     {
-        return "container.mythoAltar";
+        return "Input";
     }
 
-    /**
-     * Returns if the inventory is named
-     */
     @Override
-    public boolean hasCustomInventoryName()
+    public ItemStack getStackInSlotOnClosing(int slot)
     {
-        return false;//TODO: Implement custom named Altars
-    }
-
-    /**
-     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
-     * like when you close a workbench GUI.
-     */
-    public ItemStack getStackInSlotOnClosing(int p_70304_1_)
-    {
-        if(p_70304_1_ == isIndex)
+        if(slot == ichorIndex)
         {
         	if(ichorStack != null)
         	{
@@ -91,22 +73,19 @@ public class InventoryAltarIn extends InventoryCrafting
         	}
         	return null;
         }
-        return super.getStackInSlotOnClosing(p_70304_1_);
+        return super.getStackInSlotOnClosing(slot);
     }
 
-    /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
-     */
-    public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_)
+    @Override
+    public ItemStack decrStackSize(int slot, int amount)
     {
-    	if(p_70298_1_ == isIndex)
+    	if(slot == ichorIndex)
         {
         	if(ichorStack != null)
         	{
 	            ItemStack itemstack;
 	
-	            if(ichorStack.stackSize <= p_70298_2_)
+	            if(ichorStack.stackSize <= amount)
 	            {
 	                itemstack = ichorStack;
 	                ichorStack = null;
@@ -115,7 +94,7 @@ public class InventoryAltarIn extends InventoryCrafting
 	            }
 	            else
 	            {
-	                itemstack = ichorStack.splitStack(p_70298_2_);
+	                itemstack = ichorStack.splitStack(amount);
 	
 	                if(ichorStack.stackSize == 0)
 	                {
@@ -128,30 +107,26 @@ public class InventoryAltarIn extends InventoryCrafting
         	}
         	return null;
         }
-        return super.decrStackSize(p_70298_1_, p_70298_2_);
+        return super.decrStackSize(slot, amount);
     }
 
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     */
-    public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        if(p_70299_1_ == isIndex)
+        if(slot == ichorIndex)
         {
-        	ichorStack = p_70299_2_;
+        	ichorStack = stack;
         	eventHandler.onCraftMatrixChanged(this);
         }
         else
         {
-        	super.setInventorySlotContents(p_70299_1_, p_70299_2_);
+        	super.setInventorySlotContents(slot, stack);
         }
     }
 
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     */
+    @Override
     public boolean isItemValidForSlot(int i, ItemStack stack)
     {
-        return i == isIndex ? stack.isItemEqual(new ItemStack(MythoCraftItems.ichor)) : super.isItemValidForSlot(i, stack);
+        return i == ichorIndex ? TileEntityAltar.isIchor(stack) : super.isItemValidForSlot(i, stack);
     }
 }

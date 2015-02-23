@@ -1,11 +1,10 @@
 package kdlalp.mod.mythocraft.crafting;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import kdlalp.mod.mythocraft.blocks.MythoCraftBlocks;
 import kdlalp.mod.mythocraft.items.MythoCraftItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class MythoCraftRecipes
 {
@@ -26,6 +25,6 @@ public class MythoCraftRecipes
 	private static void initAltar()//Could move this to AltarRecipes
 	{
     	AltarRecipes.getInstance().addShapelessRecipe(new ItemStack(Items.coal, 64), 1, 0, 16, Items.blaze_powder);
-    	AltarRecipes.getInstance().addShapelessRecipe(new ItemStack(MythoCraftBlocks.altar), 100, 2, 0, Blocks.stone);
+    	AltarRecipes.getInstance().addShapelessRecipe(new ItemStack(Items.blaze_powder), 0, 2, 0, Items.coal);
 	}
 }

@@ -1,0 +1,24 @@
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+bin
+.gitignore
+.gradle
+.settings
+.classpath
+.project
+build.gradle
+=======
+=======
+>>>>>>> Stashed changes
+bin		
+.gitignore		
+.gradle		
+.settings		
+.classpath		
+.project		
+<<<<<<< Updated upstream
+build.gradle
+>>>>>>> Stashed changes
+=======
+build.gradle
+>>>>>>> Stashed changes

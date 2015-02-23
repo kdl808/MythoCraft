@@ -1,9 +1,8 @@
 package kdlalp.mod.mythocraft.blocks.altar;
 
-import kdlalp.mod.mythocraft.blocks.MythoCraftBlocks;
+import kdlalp.mod.mythocraft.core.MythoSettings;
 import kdlalp.mod.mythocraft.crafting.AltarRecipes;
 import kdlalp.mod.mythocraft.crafting.IAltarRecipe;
-import kdlalp.mod.mythocraft.items.MythoCraftItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -11,148 +10,137 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.world.World;
 
 public class ContainerAltar extends Container
 {
+	private TileEntityAltar altar;
     /** The crafting matrix inventory (3x3). */
-    public InventoryAltarIn craftMatrix = new InventoryAltarIn(this, 3, 3);
-    public InventoryAltarOut craftResult = new InventoryAltarOut(1);
-    private World worldObj;
+    public InventoryAltarIn craftMatrix;
+    public InventoryAltarOut craftResult;
     private EntityPlayer player;
-    private int posX;
-    private int posY;
-    private int posZ;
 
-    public ContainerAltar(InventoryPlayer p_i1808_1_, World p_i1808_2_, int p_i1808_3_, int p_i1808_4_, int p_i1808_5_)
+    /** Used to initialise the InventoryAltarIn */
+    protected boolean ignoreChanges = false;
+
+    public ContainerAltar(InventoryPlayer inventory, TileEntityAltar tile)
     {
-        worldObj = p_i1808_2_;
-        player = p_i1808_1_.player;
-        posX = p_i1808_3_;
-        posY = p_i1808_4_;
-        posZ = p_i1808_5_;
-        addSlotToContainer(new SlotAltarCrafting(p_i1808_1_.player, craftMatrix, craftResult, 0, 124, 35));//TODO:Position slots
+        player = inventory.player;
+        altar = tile;
+        craftMatrix = altar.getCraftMatrix(this);
+        craftResult = new InventoryAltarOut(player, MythoSettings.ALTAR_NUM_RESULTS);
+        int i;
+        int j;
+        for(i = 0; i < 3; i++)
+        {
+        	for(j = 0; j < 3; j++)
+        	{
+        		addSlotToContainer(new Slot(craftMatrix, j + i * 3, 30 + j * 18, 17 + i * 18));//Matrix slots 0 -> 8
+        	}
+        }
         addSlotToContainer(new Slot(craftMatrix, 9, 93, 53){
-            @Override
-            public int getSlotStackLimit()
-            {
-                return MythoCraftItems.ichor.getItemStackLimit(getStack());
-            }
         	@Override
         	public boolean isItemValid(ItemStack stack)
         	{
-        		return stack.isItemEqual(new ItemStack(MythoCraftItems.ichor));
+        		return TileEntityAltar.isIchor(stack);
         	}
-        });
-        int l;
-        int i1;
+        });//Ichor slot 9
+        //for(i = 0; i < altar.numOutPuts)//TODO:Position multiple slots
+        addSlotToContainer(new SlotAltarCrafting(inventory.player, craftMatrix, craftResult, 0, 124, 35));//Output slots 10 -> (9+numOutputs)
 
-        for (l = 0; l < 3; ++l)
+        for(i = 0; i < 3; i++)
         {
-            for (i1 = 0; i1 < 3; ++i1)
-            {
-                addSlotToContainer(new Slot(craftMatrix, i1 + l * 3, 30 + i1 * 18, 17 + l * 18));
-            }
+        	for(j = 0; j < 9; j++)
+        	{
+        		addSlotToContainer(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));//Inventory slots (11 -> 38) + nO
+        	}
         }
-
-        for (l = 0; l < 3; ++l)
+        for(j = 0; j < 9; j++)
         {
-            for (i1 = 0; i1 < 9; ++i1)
-            {
-                addSlotToContainer(new Slot(p_i1808_1_, i1 + l * 9 + 9, 8 + i1 * 18, 84 + l * 18));
-            }
+        	addSlotToContainer(new Slot(inventory, j, 8 + j * 18, 142));//Hotbar slots (39 -> 47) + nO
         }
-
-        for (l = 0; l < 9; ++l)
-        {
-            addSlotToContainer(new Slot(p_i1808_1_, l, 8 + l * 18, 142));
-        }
-
         onCraftMatrixChanged(craftMatrix);
     }
+
+    /**
+     * Callback for when automation changes something in the TileEntity
+     */
+	public void updateContents(int slot, ItemStack newStack)
+	{
+		craftMatrix.setInventorySlotContents(slot, newStack);
+	}
 
     /**
      * Callback for when the crafting matrix is changed.
      */
     @Override
-    public void onCraftMatrixChanged(IInventory p_75130_1_)
+    public void onCraftMatrixChanged(IInventory inventory)
     {
-    	IAltarRecipe recipe = AltarRecipes.getInstance().findMatchingRecipe(craftMatrix, player);
-        craftResult.setInventorySlotContents(0, recipe != null ? recipe.getResult(craftMatrix).copy() : CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
-        craftResult.setRecipe(recipe);
-    }
-
-    /**
-     * Called when the container is closed.
-     */
-    @Override
-    public void onContainerClosed(EntityPlayer p_75134_1_)
-    {
-        super.onContainerClosed(p_75134_1_);
-
-        if(!worldObj.isRemote)
-        {
-            for(int i = 0; i < 10; ++i)
-            {
-                ItemStack itemstack = craftMatrix.getStackInSlotOnClosing(i);
-
-                if(itemstack != null)
-                {
-                    p_75134_1_.dropPlayerItemWithRandomChoice(itemstack, false);
-                }
-            }
-        }
+    	if(!ignoreChanges)
+    	{
+			if(inventory == craftMatrix)
+			{
+				altar.updateSlots(this);
+			}
+			IAltarRecipe recipe = AltarRecipes.getInstance().findMatchingRecipe(craftMatrix, player);
+		    craftResult.setRecipe(recipe, craftMatrix, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, altar.getWorldObj()));
+    	}
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_)
+    public boolean canInteractWith(EntityPlayer player)
     {
-        return worldObj.getBlock(posX, posY, posZ) != MythoCraftBlocks.altar ? false : p_75145_1_.getDistanceSq((double)posX + 0.5D, (double)posY + 0.5D, (double)posZ + 0.5D) <= 64.0D;
+        return altar.isUseableByPlayer(player);
     }
 
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_)
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)inventorySlots.get(p_82846_2_);
+        Slot slot = (Slot)inventorySlots.get(slotIndex);
 
         if (slot != null && slot.getHasStack())
         {
-            ItemStack itemstack1 = slot.getStack();
+        	ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-
-            if (p_82846_2_ == 0)
+            int numOut = craftResult.getSizeInventory() - 1;
+            if(slotIndex >= 10 && slotIndex < 10 + numOut)//Result
             {
-                if (!mergeItemStack(itemstack1, 10, 46, true))
+                if(!mergeItemStack(itemstack1, 11 + numOut, 47 + numOut, true))//Move to Inventory
                 {
                     return null;
                 }
-
                 slot.onSlotChange(itemstack1, itemstack);
             }
-            else if (p_82846_2_ >= 10 && p_82846_2_ < 37)
+            else if(slotIndex >= 10)//Not Input or Ichor
             {
-                if (!mergeItemStack(itemstack1, 37, 46, false))
+            	for(int i = 0; i < altar.getSizeInventory(); i++)
+            	{
+            		if(altar.isItemValidForSlot(i, itemstack1) && !mergeItemStack(itemstack1, i, i, false))
+	            	{
+	            		return null;
+	            	}
+            	}
+                if (slotIndex >= 11 + numOut && slotIndex < 38 + numOut)//Inventory
+                {
+                    if(!this.mergeItemStack(itemstack1, 38 + numOut, 47 + numOut, false))
+                    {
+                        return null;
+                    }
+                }
+                else if (slotIndex >= 38 + numOut && slotIndex < 47 + numOut && !this.mergeItemStack(itemstack1, 11 + numOut, 30 + numOut, false))//Hotbar
                 {
                     return null;
                 }
             }
-            else if (p_82846_2_ >= 37 && p_82846_2_ < 46)
-            {
-                if (!mergeItemStack(itemstack1, 10, 37, false))
-                {
-                    return null;
-                }
-            }
-            else if (!mergeItemStack(itemstack1, 10, 46, false))
+            else if(!this.mergeItemStack(itemstack1, 11 + numOut, 47 + numOut, false))//Inventory and Hotbar
             {
                 return null;
             }
 
-            if (itemstack1.stackSize == 0)
+            if(itemstack1.stackSize == 0)
             {
                 slot.putStack((ItemStack)null);
             }
@@ -161,20 +149,19 @@ public class ContainerAltar extends Container
                 slot.onSlotChanged();
             }
 
-            if (itemstack1.stackSize == itemstack.stackSize)
+            if(itemstack1.stackSize == itemstack.stackSize)
             {
                 return null;
             }
-
-            slot.onPickupFromSlot(p_82846_1_, itemstack1);
+            slot.onPickupFromSlot(player, itemstack1);
         }
 
         return itemstack;
     }
 
     @Override
-    public boolean func_94530_a(ItemStack p_94530_1_, Slot p_94530_2_)
+    public boolean func_94530_a(ItemStack stack, Slot slot)
     {
-        return p_94530_2_.inventory != craftResult && super.func_94530_a(p_94530_1_, p_94530_2_);
+        return slot.inventory != craftResult && super.func_94530_a(stack, slot);
     }
 }
