@@ -3,9 +3,9 @@ package kdlalp.mod.mythocraft.api.crafting;
 import java.util.ArrayList;
 import java.util.List;
 
-import kdlalp.mod.mythocraft.blocks.altar.InventoryAltarIn;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
@@ -32,7 +32,7 @@ public class AltarRecipes
     }
     
     
-    public IAltarRecipe findMatchingRecipe(InventoryAltarIn inv, EntityPlayer player)
+    public IAltarRecipe findMatchingRecipe(InventoryCrafting inv, EntityPlayer player)
     {
         for(int i = 0; i < recipes.size(); i++)
         {

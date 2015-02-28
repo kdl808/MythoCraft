@@ -1,7 +1,7 @@
 package kdlalp.mod.mythocraft.api.crafting;
 
-import kdlalp.mod.mythocraft.blocks.altar.InventoryAltarIn;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
@@ -35,7 +35,7 @@ public class AltarCraftingRecipe implements IAltarRecipe
 	}
 
 	@Override
-	public ItemStack[] getResults(InventoryAltarIn craftMatrix)
+	public ItemStack[] getResults(InventoryCrafting craftMatrix)
 	{
 		return results != null ? results : new ItemStack[]{pattern.getRecipeOutput()};
 	}
@@ -59,7 +59,7 @@ public class AltarCraftingRecipe implements IAltarRecipe
 	}
 
 	@Override
-	public boolean matches(EntityPlayer player, InventoryAltarIn craftMatrix)
+	public boolean matches(EntityPlayer player, InventoryCrafting craftMatrix)
 	{
 		return pattern.matches(craftMatrix, player.worldObj);
 	}

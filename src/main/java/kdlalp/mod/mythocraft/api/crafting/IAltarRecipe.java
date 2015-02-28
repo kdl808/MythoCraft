@@ -1,12 +1,12 @@
 package kdlalp.mod.mythocraft.api.crafting;
 
-import kdlalp.mod.mythocraft.blocks.altar.InventoryAltarIn;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
 public interface IAltarRecipe
 {
-	public ItemStack[] getResults(InventoryAltarIn inv);
+	public ItemStack[] getResults(InventoryCrafting inv);
 
 	public int getTierIncrease();
 	
@@ -14,5 +14,5 @@ public interface IAltarRecipe
 	
 	public int ichorRequired();
 	
-	public boolean matches(EntityPlayer player, InventoryAltarIn craftMatrix);
+	public boolean matches(EntityPlayer player, InventoryCrafting craftMatrix);
 }
