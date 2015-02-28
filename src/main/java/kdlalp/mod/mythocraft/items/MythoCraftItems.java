@@ -40,7 +40,7 @@ public class MythoCraftItems
 					player.addChatMessage(new ChatComponentText(String.format("%s has a tier of %d", player.getCommandSenderName(), MythoPlayer.tier(player))));
 					if(altar != null)
 					{
-						player.addChatMessage(new ChatComponentText(String.format("Ichor=%d (Fluid=%d; Items=%d", altar.getTotalIchor(), altar.getFluidIchor(), altar.getItemIchor())));
+						player.addChatMessage(new ChatComponentText(String.format("Ichor=%d (Fluid=%d; Items=%d)", altar.getTotalIchor(), altar.getFluidIchor(), altar.getItemIchor())));
 						flag = true;
 					}
 				}

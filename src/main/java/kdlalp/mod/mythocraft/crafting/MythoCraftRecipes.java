@@ -11,7 +11,7 @@ public class MythoCraftRecipes
 	public static void init()
 	{
 		initCrafting();
-		initAltar();
+		//initAltar(); Moved to AltarRecipes()
 	}
 
 	private static void initCrafting()
@@ -22,9 +22,9 @@ public class MythoCraftRecipes
 		GameRegistry.addShapelessRecipe(new ItemStack(MythoCraftItems.dawnGold), Items.quartz, Items.gold_ingot);
 	}
 
-	private static void initAltar()//Could move this to AltarRecipes
+	/*private static void initAltar()
 	{
-    	AltarRecipes.getInstance().addShapelessRecipe(new ItemStack(Items.coal, 64), 1, 0, 16, Items.blaze_powder);
-    	AltarRecipes.getInstance().addShapelessRecipe(new ItemStack(Items.blaze_powder), 0, 2, 0, Items.coal);
-	}
+    	AltarRecipes.getInstance().addRecipe(RecipeHelper.getShapelessRecipe(new ItemStack(Items.coal, 64), Items.blaze_powder), 1, 0, 1600);
+    	AltarRecipes.getInstance().addRecipe(RecipeHelper.getShapelessRecipe(new ItemStack(Items.blaze_powder), Items.coal), 0, 2, 0);
+	}*/
 }

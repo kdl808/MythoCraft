@@ -1,21 +1,26 @@
-package kdlalp.mod.mythocraft.crafting;
+package kdlalp.mod.mythocraft.api.crafting;
 
 import kdlalp.mod.mythocraft.blocks.altar.InventoryAltarIn;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
+/**
+ * Wrapper around a standard IRecipe to convert it to an IAltarRecipe
+ */
 public class AltarCraftingRecipe implements IAltarRecipe
 {
 	/** Basic crafting IRecipe to wrap */ 
 	private IRecipe pattern;
+	/** The results */ 
+	private ItemStack[] results;
 	/** Tier recieved for completing the craft */
 	private int rTier;
 	/** Tier required to perform the craft */
 	private int tier;
 	/** amount of Ichor required to complete the craft */
 	private int ichor;
-	
+
 	public AltarCraftingRecipe(IRecipe crafting, int ichorCost, int tierReward, int tierRequired)
 	{
 		pattern = crafting;
@@ -23,11 +28,16 @@ public class AltarCraftingRecipe implements IAltarRecipe
 		rTier = tierReward;
 		tier = tierRequired;
 	}
+	public AltarCraftingRecipe(IRecipe crafting, ItemStack[] results, int ichorCost, int tierReward, int tierRequired)
+	{
+		this(crafting,ichorCost, tierReward, tierRequired);
+		
+	}
 
 	@Override
 	public ItemStack[] getResults(InventoryAltarIn craftMatrix)
 	{
-		return new ItemStack[]{pattern.getRecipeOutput()};
+		return results != null ? results : new ItemStack[]{pattern.getRecipeOutput()};
 	}
 
 	@Override

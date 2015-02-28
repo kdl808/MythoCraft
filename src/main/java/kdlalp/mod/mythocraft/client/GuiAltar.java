@@ -1,10 +1,10 @@
 package kdlalp.mod.mythocraft.client;
 
+import kdlalp.mod.mythocraft.api.crafting.IAltarRecipe;
 import kdlalp.mod.mythocraft.blocks.altar.ContainerAltar;
 import kdlalp.mod.mythocraft.blocks.altar.TileEntityAltar;
 import kdlalp.mod.mythocraft.core.MythoPlayer;
 import kdlalp.mod.mythocraft.core.MythoSettings;
-import kdlalp.mod.mythocraft.crafting.IAltarRecipe;
 import kdlalp.mod.mythocraft.fluids.MythoCraftFluids;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -60,7 +60,7 @@ public class GuiAltar extends GuiContainer
         int l = (height - ySize) / 2;
         drawTexturedModalRect(k, l, 0, 0, xSize, ySize);//MainGui
         int i = altar.getFluidIchor() * 50 / MythoSettings.ALTAR_TANK_SIZE;
-		drawTexturedModelRectFromIcon(k + 11, l + 67 - i, MythoCraftFluids.liquidIchor.getStillIcon(), 9, i);//IchorBar
+		drawTexturedModelRectFromIcon(k + 11, l + 67 - i, MythoCraftFluids.liquidIchor.getStillIcon(), 9, i);//IchorBar TODO:Fix IchorBar
         IAltarRecipe recipe = ((ContainerAltar)inventorySlots).craftResult.getAltarRecipe();
         if(recipe != null)
         {

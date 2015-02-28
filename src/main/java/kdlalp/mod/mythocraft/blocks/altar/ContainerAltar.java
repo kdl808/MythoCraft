@@ -1,8 +1,8 @@
 package kdlalp.mod.mythocraft.blocks.altar;
 
+import kdlalp.mod.mythocraft.api.crafting.AltarRecipes;
+import kdlalp.mod.mythocraft.api.crafting.IAltarRecipe;
 import kdlalp.mod.mythocraft.core.MythoSettings;
-import kdlalp.mod.mythocraft.crafting.AltarRecipes;
-import kdlalp.mod.mythocraft.crafting.IAltarRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

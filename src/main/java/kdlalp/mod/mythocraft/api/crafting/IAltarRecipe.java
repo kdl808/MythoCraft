@@ -1,4 +1,4 @@
-package kdlalp.mod.mythocraft.crafting;
+package kdlalp.mod.mythocraft.api.crafting;
 
 import kdlalp.mod.mythocraft.blocks.altar.InventoryAltarIn;
 import net.minecraft.entity.player.EntityPlayer;

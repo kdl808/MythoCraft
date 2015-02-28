@@ -1,8 +1,7 @@
 package kdlalp.mod.mythocraft.blocks.altar;
 
-import scala.actors.threadpool.Arrays;
+import kdlalp.mod.mythocraft.api.crafting.IAltarRecipe;
 import kdlalp.mod.mythocraft.core.MythoPlayer;
-import kdlalp.mod.mythocraft.crafting.IAltarRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
