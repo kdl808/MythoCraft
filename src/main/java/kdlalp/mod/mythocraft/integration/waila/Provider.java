@@ -1,4 +1,4 @@
-package kldalp.mod.mythocraft.integration.waila;
+package kdlalp.mod.mythocraft.integration.waila;
 
 import java.util.List;
 

@@ -69,7 +69,7 @@ public class MythoCraftMod
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-    	FMLInterModComms.sendMessage("Waila", "register", "kldalp.mod.mythocraft.integration.waila.Provider.callbackRegister");
+    	FMLInterModComms.sendMessage("Waila", "register", "kdlalp.mod.mythocraft.integration.waila.Provider.callbackRegister");
     }
     
     private void initOreDict()
