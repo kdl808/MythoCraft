@@ -1,4 +1,4 @@
-package kdlalp.mod.mythocraft.blocks.altar;
+package kdlalp.mod.mythocraft.blocks.shrine;
 
 import static kdlalp.mod.mythocraft.core.MythoSettings.ICHOR_CONVERT_RATIO;
 
@@ -14,6 +14,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,31 +29,34 @@ import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityAltar extends TileEntity implements ISidedInventory, IFluidHandler
+public class TileEntityShrine extends TileEntity implements ISidedInventory, IFluidHandler
 {    
     /** List of the stacks in the input. */
-    private ItemStack[] inputStacks = new ItemStack[MythoSettings.ALTAR_INPUT_WIDTH * MythoSettings.ALTAR_INPUT_HEIGHT];//TODO:Variable input size?
+    private ItemStack[] inputStacks = new ItemStack[MythoSettings.SHRINE_INPUT_WIDTH * MythoSettings.SHRINE_INPUT_HEIGHT];//TODO:Variable input size?
     /** Stack in the ichor item slot */
     private ItemStack ichorStack = null;
     /** Amount of ichor in fluid form */
-    private FluidTank ichor = new FluidTank(MythoSettings.ALTAR_TANK_SIZE);
+    private FluidTank ichor = new FluidTank(MythoSettings.SHRINE_TANK_SIZE);
     /** number of ticks until next ichor item is consumed */
     //TODO:Implement gradual liquification: private int nextIchor;
     /** Name given through use of an anvil */
     private String name;
     /** List of Containers listening to this */
-    private List<ContainerAltar> listeners = new ArrayList<ContainerAltar>();
+    private List<ContainerShrine> listeners = new ArrayList<ContainerShrine>();
 
     //**********Super Methods**********
 	@Override
 	public void updateEntity()
     {
 		super.updateEntity();
-		int i = getIchorAmount(ichorStack);
-		if(ichor.getCapacity() - ichor.getFluidAmount() >= i)
+		if(!worldObj.isRemote)
 		{
-			fill(null, new FluidStack(MythoCraftFluids.liquidIchor, i), true);
-			decrStackSize(getSizeInventory() - 1, i);
+			int i = getIchorAmount(ichorStack);
+			if(ichor.getCapacity() - ichor.getFluidAmount() >= i)
+			{
+				fill(null, new FluidStack(MythoCraftFluids.liquidIchor, i), true);
+				decrStackSize(getSizeInventory() - 1, i);
+			}
 		}
 		/*TODO:Implement gradual liquification
 		if(nextIchor > 0)
@@ -197,13 +203,13 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 			ItemStack itemstack;
 			if(stack.stackSize <= amount)
             {
-                itemstack = stack;
+                itemstack = stack.copy();
                 setInventorySlotContents(slot, null);
             }
             else
             {
                 itemstack = stack.splitStack(amount);
-                if(stack.stackSize == 0)
+                if(stack.stackSize <= 0)
                 {
                 	stack = null;
                 }
@@ -234,7 +240,7 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 	@Override
 	public String getInventoryName()
 	{
-		return hasCustomInventoryName() ? name : "container.mythoAltar";
+		return hasCustomInventoryName() ? name : "container.mythoShrine";
 	}
 
 	@Override
@@ -307,14 +313,44 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 		FluidStack f = ichor.getFluid();
 		return fill(side, f != null ? new FluidStack(f, amount) : new FluidStack(MythoCraftFluids.liquidIchor, amount), true);
 	}
-
+	
+	@Override
+	public Packet getDescriptionPacket()
+	{
+	    NBTTagCompound syncData = new NBTTagCompound();
+	    syncData.setInteger("FluidAmount", getFluidIchor());
+	    if(ichorStack != null)
+	    {
+	    	syncData.setTag("ItemIchor", ichorStack.writeToNBT(new NBTTagCompound()));
+	    }
+		System.out.println("Sending packet, Ichor level: " + getFluidIchor());
+	    return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, syncData);
+	}
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+	{
+	    NBTTagCompound syncData = pkt.func_148857_g();
+	    if(syncData.hasKey("FluidAmount"))
+	    {
+	    	setFluidIchor(syncData.getInteger("FluidAmount"));
+	    }
+	    if(syncData.hasKey("ItemIchor"))
+	    {
+	    	setInventorySlotContents(inputStacks.length, ItemStack.loadItemStackFromNBT(syncData.getCompoundTag("ItemIchor")));
+	    }
+	    else
+	    {
+	    	setInventorySlotContents(inputStacks.length, null);
+	    }
+		System.out.println("Recieved packet, Ichor level: " + getFluidIchor());
+	}
+	
     @SideOnly(Side.CLIENT)
     /**
      * Used to synchronise the client
      */
 	public void setFluidIchor(int amount)
 	{
-		System.out.println("Setting Fluid Ichor to " + amount);//XXX
 		if(amount < 1)
 		{
 			return;
@@ -340,7 +376,11 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 	}
 	public int getTotalIchor()
 	{
-		return getFluidIchor() + getItemIchor();
+		int i = getFluidIchor();
+		int j = getItemIchor();
+		if(!worldObj.isRemote)	System.out.println(String.format("%d (%d + %d)", i + j, i, j));//XXX
+		return i + j;
+		//return getFluidIchor() + getItemIchor();
 	}
 	
 	/**
@@ -372,7 +412,6 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 
 	private int getIchorAmount(ItemStack stack)
 	{
-    	//TODO:DEBUG/TEST
 		if(stack != null && stack.stackSize > 0)
 		{
 			if(stack.getItem().equals(MythoCraftItems.solidIchor))
@@ -399,20 +438,20 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 	private boolean isInputStack(int slot, ItemStack stack)
 	{
 		ItemStack input = inputStacks[slot];
-		return input != null && stack != null && input.stackSize < input.getMaxStackSize() && input.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(input, stack);
+		return input != null && stack != null && input.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(input, stack);
 	}
 
 	/**
-	 * Gets the instance of InventoryAltarIn for the Container
+	 * Gets the instance of InventoryShrineIn for the Container
 	 */
-	public InventoryAltarIn getCraftMatrix(ContainerAltar c)
+	public InventoryShrineIn getCraftMatrix(ContainerShrine c)
 	{
-		return new InventoryAltarIn(c, this, MythoSettings.ALTAR_INPUT_WIDTH, MythoSettings.ALTAR_INPUT_HEIGHT);
+		return new InventoryShrineIn(c, this, MythoSettings.SHRINE_INPUT_WIDTH, MythoSettings.SHRINE_INPUT_HEIGHT);
 	}
 	
-    private void notifyContainers(int slot, ItemStack newStack, ContainerAltar... exclusions)
+    private void notifyContainers(int slot, ItemStack newStack, ContainerShrine... exclusions)
 	{
-		for(ContainerAltar c : listeners)
+		for(ContainerShrine c : listeners)
 		{
 			if(!Arrays.asList(exclusions).contains(c))
 			{
@@ -423,7 +462,9 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
     
     private void ichorChanged()
     {
-    	for(ContainerAltar c : listeners)
+    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    	markDirty();
+    	for(ContainerShrine c : listeners)
 		{
 			c.onCraftMatrixChanged(this);
 		}
@@ -433,7 +474,7 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 	 * Synchronises the TileEntity Slots with
 	 * @param container the container
 	 */
-	public void updateSlots(ContainerAltar container)
+	public void updateSlots(ContainerShrine container)
 	{
 		for(int i = 0; i < getSizeInventory(); i++)
 		{
@@ -444,7 +485,7 @@ public class TileEntityAltar extends TileEntity implements ISidedInventory, IFlu
 	/**
 	 * Actually set the stack in the slot and notify all listeners not in the list of exclusions
 	 */
-	private void setStackAndUpdate(int slot, ItemStack stack, ContainerAltar... exclusions)
+	private void setStackAndUpdate(int slot, ItemStack stack, ContainerShrine... exclusions)
 	{
 		if(slot < 0 || slot >= getSizeInventory())
 		{

@@ -1,6 +1,6 @@
 package kdlalp.mod.mythocraft.blocks;
 
-import kdlalp.mod.mythocraft.blocks.altar.TileEntityAltar;
+import kdlalp.mod.mythocraft.blocks.shrine.TileEntityShrine;
 import kdlalp.mod.mythocraft.core.MythoCraftMod;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -10,10 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockAltar extends BlockContainer
+public class BlockShrine extends BlockContainer
 {
 
-	protected BlockAltar()
+	protected BlockShrine()
 	{
 		super(Material.rock);
 	}
@@ -23,7 +23,7 @@ public class BlockAltar extends BlockContainer
      */
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
     {
-    	TileEntityAltar altar = (TileEntityAltar)world.getTileEntity(x, y, z);
+    	TileEntityShrine altar = (TileEntityShrine)world.getTileEntity(x, y, z);
     	if(altar.isUseableByPlayer(player))
     	{
             player.openGui(MythoCraftMod.instance, 0, world, x, y, z);
@@ -39,13 +39,13 @@ public class BlockAltar extends BlockContainer
     	super.onBlockPlacedBy(world, i, j, k, entity, stack);
         if(stack.hasDisplayName())
         {
-            ((TileEntityAltar)world.getTileEntity(i, j, k)).setCustomName(stack.getDisplayName());
+            ((TileEntityShrine)world.getTileEntity(i, j, k)).setCustomName(stack.getDisplayName());
         }
     }
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{
-		return new TileEntityAltar();
+		return new TileEntityShrine();
 	}
 }

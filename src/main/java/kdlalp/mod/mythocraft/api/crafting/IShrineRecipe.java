@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
-public interface IAltarRecipe
+public interface IShrineRecipe
 {
 	public ItemStack[] getResults(InventoryCrafting inv);
 

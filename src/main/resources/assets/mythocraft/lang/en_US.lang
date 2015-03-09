@@ -7,9 +7,9 @@ item.obsidianShard.name=Obsidian Shard
 item.duskIron.name=Dusk Iron Ingot
 item.dawnGold.name=Dawn Gold Ingot
 
-block.altar.name=Altar
+block.shrine.name=Shrine
 
-container.mythoAltar=Altar
+container.mythoShrine=Shrine
 
 label.tier=Tier
 

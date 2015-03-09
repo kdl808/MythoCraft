@@ -1,30 +1,30 @@
-package kdlalp.mod.mythocraft.blocks.altar;
+package kdlalp.mod.mythocraft.blocks.shrine;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
-public class InventoryAltarIn extends InventoryCrafting
+public class InventoryShrineIn extends InventoryCrafting
 {
-	/** Altar instance */
-	private TileEntityAltar altar;
+	/** Shrine instance */
+	private TileEntityShrine shrine;
     /** Stack of Ichor. */
     private ItemStack ichorStack;
     /** Index of Ichor Slot. */
     private int ichorIndex;
     /** Class containing the callbacks for the events on_GUIClosed and on_CraftMaxtrixChanged. */
-    private ContainerAltar eventHandler;
+    private ContainerShrine eventHandler;
 
-    public InventoryAltarIn(ContainerAltar c, TileEntityAltar tile, int width, int height)
+    public InventoryShrineIn(ContainerShrine c, TileEntityShrine tile, int width, int height)
     {
         super(c, width, height);
         eventHandler = c;
-        altar = tile;
+        shrine = tile;
         ichorIndex = width * height;
         ichorStack = null;
         eventHandler.ignoreChanges = true;
         for(int i = 0; i < getSizeInventory(); i++)
         {
-        	setInventorySlotContents(i, altar.getStackInSlot(i));
+        	setInventorySlotContents(i, shrine.getStackInSlot(i));
         }
         eventHandler.ignoreChanges = false;
     }
@@ -46,12 +46,12 @@ public class InventoryAltarIn extends InventoryCrafting
      */
     public int getIchor()
     {
-    	return altar.getTotalIchor();
+    	return shrine.getTotalIchor();
     }
 
 	public void consumeIchor(int amount)
 	{
-		altar.consumeIchor(amount);
+		shrine.consumeIchor(amount);
 	}
 
     @Override
@@ -127,6 +127,6 @@ public class InventoryAltarIn extends InventoryCrafting
     @Override
     public boolean isItemValidForSlot(int i, ItemStack stack)
     {
-        return i == ichorIndex ? TileEntityAltar.isIchor(stack) : super.isItemValidForSlot(i, stack);
+        return i == ichorIndex ? TileEntityShrine.isIchor(stack) : super.isItemValidForSlot(i, stack);
     }
 }

@@ -1,21 +1,21 @@
-package kdlalp.mod.mythocraft.blocks.altar;
+package kdlalp.mod.mythocraft.blocks.shrine;
 
-import kdlalp.mod.mythocraft.api.crafting.IAltarRecipe;
+import kdlalp.mod.mythocraft.api.crafting.IShrineRecipe;
 import kdlalp.mod.mythocraft.core.MythoPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class InventoryAltarOut implements IInventory
+public class InventoryShrineOut implements IInventory
 {
 	/** List of the stacks in the crafting matrix. */
     private ItemStack[] stackList;
     /** Player using this Inventory */
     private EntityPlayer thePlayer;
-    /** Current IAltarRecipe */
-    private IAltarRecipe recipe;
+    /** Current IShrineRecipe */
+    private IShrineRecipe recipe;
     
-    public InventoryAltarOut(EntityPlayer player, int numSlots)
+    public InventoryShrineOut(EntityPlayer player, int numSlots)
     {
     	stackList = new ItemStack[numSlots];
     	thePlayer = player;
@@ -146,12 +146,12 @@ public class InventoryAltarOut implements IInventory
         return true;
     }
     
-    public void setRecipe(IAltarRecipe r, InventoryAltarIn craftMatrix, ItemStack... fallback)
+    public void setRecipe(IShrineRecipe r, InventoryShrineIn craftMatrix, ItemStack... fallback)
 	{
 		recipe = r;
 		if(recipe != null && MythoPlayer.tier(thePlayer) >= recipe.tierRequired() && craftMatrix.getIchor() >= recipe.ichorRequired())
 		{
-			setResults(((IAltarRecipe)r).getResults(craftMatrix));
+			setResults(((IShrineRecipe)r).getResults(craftMatrix));
 		}
 		else if(fallback != null && fallback.length > 0)
 		{
@@ -163,9 +163,9 @@ public class InventoryAltarOut implements IInventory
 		}
 	}
 
-	public IAltarRecipe getAltarRecipe()
+	public IShrineRecipe getShrineRecipe()
 	{
-		return recipe instanceof IAltarRecipe ? (IAltarRecipe)recipe : null;
+		return recipe instanceof IShrineRecipe ? (IShrineRecipe)recipe : null;
 	}
 	
 	private void setResults(ItemStack[] stacks)

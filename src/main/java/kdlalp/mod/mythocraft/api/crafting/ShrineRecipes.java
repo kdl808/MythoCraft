@@ -9,34 +9,34 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
-public class AltarRecipes
+public class ShrineRecipes
 {
 	/** The static instance of this class */
-    private static final AltarRecipes instance = new AltarRecipes();
+    private static final ShrineRecipes instance = new ShrineRecipes();
     /** A list of all the recipes added */
-    private List<IAltarRecipe> recipes = new ArrayList<IAltarRecipe>();
+    private List<IShrineRecipe> recipes = new ArrayList<IShrineRecipe>();
 
     /**
      * Returns the static instance of this class
      */
-    public static final AltarRecipes getInstance()
+    public static final ShrineRecipes getInstance()
     {
         /** The static instance of this class */
         return instance;
     }
 
-    private AltarRecipes()
+    private ShrineRecipes()
     {
     	addRecipe(RecipeHelper.getShapelessRecipe(new ItemStack(Items.coal, 64), Items.blaze_powder), 1, 0, 1600);
     	addRecipe(RecipeHelper.getShapelessRecipe(new ItemStack(Items.blaze_powder), Items.coal), 0, 2, 0);
     }
     
     
-    public IAltarRecipe findMatchingRecipe(InventoryCrafting inv, EntityPlayer player)
+    public IShrineRecipe findMatchingRecipe(InventoryCrafting inv, EntityPlayer player)
     {
         for(int i = 0; i < recipes.size(); i++)
         {
-            IAltarRecipe recipe = recipes.get(i);
+        	IShrineRecipe recipe = recipes.get(i);
 
             if(recipe.matches(player, inv))//Moved ichor and tier requirement checks to InventoryAltarOut to allow the Altar GUI bars to work
             {
@@ -68,13 +68,13 @@ public class AltarRecipes
      */
     public void addRecipe(IRecipe recipe, ItemStack[] results, int tierReward, int tierRequired, int ichorCost)
     {
-    	recipes.add(new AltarCraftingRecipe(recipe, results, tierReward, tierRequired, ichorCost));
+    	recipes.add(new ShrineCraftingRecipe(recipe, results, tierReward, tierRequired, ichorCost));
     }
 
     /**
      * returns the List<> of all recipes
      */
-    public List<IAltarRecipe> getRecipeList()
+    public List<IShrineRecipe> getRecipeList()
     {
         return recipes;
     }

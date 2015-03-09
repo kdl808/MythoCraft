@@ -2,7 +2,7 @@ package kdlalp.mod.mythocraft.integration.waila;
 
 import java.util.List;
 
-import kdlalp.mod.mythocraft.blocks.altar.TileEntityAltar;
+import kdlalp.mod.mythocraft.blocks.shrine.TileEntityShrine;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -34,9 +34,9 @@ public class Provider implements IWailaDataProvider
 	{
 		List<String> list = currenttip;
 		TileEntity tile = accessor.getTileEntity();
-		if (tile instanceof TileEntityAltar)
+		if (tile instanceof TileEntityShrine)
 		{
-			TileEntityAltar altar = (TileEntityAltar)tile;
+			TileEntityShrine altar = (TileEntityShrine)tile;
 			list.add(String.format(StatCollector.translateToLocal("tooltip.ichorLevel"), altar.getTotalIchor(), altar.getFluidIchor(), altar.getItemIchor()));
 		}
 		return list;
@@ -57,6 +57,6 @@ public class Provider implements IWailaDataProvider
 	public static void callbackRegister(IWailaRegistrar registrar)
 	{
 		IWailaDataProvider provider = new Provider();
-		registrar.registerBodyProvider(provider, TileEntityAltar.class);
+		registrar.registerBodyProvider(provider, TileEntityShrine.class);
 	}
 }

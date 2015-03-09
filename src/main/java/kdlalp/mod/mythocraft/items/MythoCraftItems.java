@@ -1,7 +1,7 @@
 package kdlalp.mod.mythocraft.items;
 
 import kdlalp.mod.mythocraft.blocks.MythoCraftBlocks;
-import kdlalp.mod.mythocraft.blocks.altar.TileEntityAltar;
+import kdlalp.mod.mythocraft.blocks.shrine.TileEntityShrine;
 import kdlalp.mod.mythocraft.core.MythoPlayer;
 import kdlalp.mod.mythocraft.core.RegistryHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,10 +25,10 @@ public class MythoCraftItems
 		    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_)
 		    {
 				boolean flag = false;
-				TileEntityAltar altar = null;
+				TileEntityShrine altar = null;
 				if(world.getBlock(x, y, z) == MythoCraftBlocks.altar)
 				{
-					altar = (TileEntityAltar)world.getTileEntity(x, y, z);
+					altar = (TileEntityShrine)world.getTileEntity(x, y, z);
 				}
 				if(altar == null && player.isSneaking())
 				{

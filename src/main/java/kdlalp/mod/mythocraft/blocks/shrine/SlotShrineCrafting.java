@@ -1,16 +1,16 @@
-package kdlalp.mod.mythocraft.blocks.altar;
+package kdlalp.mod.mythocraft.blocks.shrine;
 
-import kdlalp.mod.mythocraft.api.crafting.IAltarRecipe;
+import kdlalp.mod.mythocraft.api.crafting.IShrineRecipe;
 import kdlalp.mod.mythocraft.core.MythoPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 
-public class SlotAltarCrafting extends SlotCrafting
+public class SlotShrineCrafting extends SlotCrafting
 {
-	private InventoryAltarIn matrix;
+	private InventoryShrineIn matrix;
 
-	public SlotAltarCrafting(EntityPlayer player, InventoryAltarIn input, InventoryAltarOut inv, int index, int x, int y)
+	public SlotShrineCrafting(EntityPlayer player, InventoryShrineIn input, InventoryShrineOut inv, int index, int x, int y)
 	{
 		super(player, input, inv, index, x, y);
 		matrix = input;
@@ -19,7 +19,7 @@ public class SlotAltarCrafting extends SlotCrafting
 	@Override
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
     {
-		IAltarRecipe recipe = ((InventoryAltarOut)inventory).getAltarRecipe();
+		IShrineRecipe recipe = ((InventoryShrineOut)inventory).getShrineRecipe();
         if(recipe != null)
         {
 	        MythoPlayer.addTier(player, recipe.getTierIncrease());

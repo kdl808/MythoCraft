@@ -8,7 +8,7 @@ import net.minecraft.item.crafting.IRecipe;
 /**
  * Wrapper around a standard IRecipe to convert it to an IAltarRecipe
  */
-public class AltarCraftingRecipe implements IAltarRecipe
+public class ShrineCraftingRecipe implements IShrineRecipe
 {
 	/** Basic crafting IRecipe to wrap */ 
 	private IRecipe pattern;
@@ -21,14 +21,14 @@ public class AltarCraftingRecipe implements IAltarRecipe
 	/** amount of Ichor required to complete the craft */
 	private int ichor;
 
-	public AltarCraftingRecipe(IRecipe crafting, int ichorCost, int tierReward, int tierRequired)
+	public ShrineCraftingRecipe(IRecipe crafting, int ichorCost, int tierReward, int tierRequired)
 	{
 		pattern = crafting;
 		ichor = ichorCost;
 		rTier = tierReward;
 		tier = tierRequired;
 	}
-	public AltarCraftingRecipe(IRecipe crafting, ItemStack[] results, int ichorCost, int tierReward, int tierRequired)
+	public ShrineCraftingRecipe(IRecipe crafting, ItemStack[] results, int ichorCost, int tierReward, int tierRequired)
 	{
 		this(crafting,ichorCost, tierReward, tierRequired);
 		

@@ -1,7 +1,7 @@
-package kdlalp.mod.mythocraft.blocks.altar;
+package kdlalp.mod.mythocraft.blocks.shrine;
 
-import kdlalp.mod.mythocraft.api.crafting.AltarRecipes;
-import kdlalp.mod.mythocraft.api.crafting.IAltarRecipe;
+import kdlalp.mod.mythocraft.api.crafting.ShrineRecipes;
+import kdlalp.mod.mythocraft.api.crafting.IShrineRecipe;
 import kdlalp.mod.mythocraft.core.MythoSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,23 +11,23 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
-public class ContainerAltar extends Container
+public class ContainerShrine extends Container
 {
-	private TileEntityAltar altar;
+	private TileEntityShrine shrine;
     /** The crafting matrix inventory (3x3). */
-    public InventoryAltarIn craftMatrix;
-    public InventoryAltarOut craftResult;
+    public InventoryShrineIn craftMatrix;
+    public InventoryShrineOut craftResult;
     private EntityPlayer player;
 
-    /** Used to initialise the InventoryAltarIn */
+    /** Used to initialise the InventoryShrineIn */
     protected boolean ignoreChanges = false;
 
-    public ContainerAltar(InventoryPlayer inventory, TileEntityAltar tile)
+    public ContainerShrine(InventoryPlayer inventory, TileEntityShrine tile)
     {
         player = inventory.player;
-        altar = tile;
-        craftMatrix = altar.getCraftMatrix(this);
-        craftResult = new InventoryAltarOut(player, MythoSettings.ALTAR_NUM_RESULTS);
+        shrine = tile;
+        craftMatrix = shrine.getCraftMatrix(this);
+        craftResult = new InventoryShrineOut(player, MythoSettings.SHRINE_NUM_RESULTS);
         int i;
         int j;
         for(i = 0; i < 3; i++)
@@ -41,11 +41,11 @@ public class ContainerAltar extends Container
         	@Override
         	public boolean isItemValid(ItemStack stack)
         	{
-        		return TileEntityAltar.isIchor(stack);
+        		return TileEntityShrine.isIchor(stack);
         	}
         });//Ichor slot 9
-        //for(i = 0; i < altar.numOutPuts)//TODO:Position multiple slots
-        addSlotToContainer(new SlotAltarCrafting(inventory.player, craftMatrix, craftResult, 0, 124, 35));//Output slots 10 -> (9+numOutputs)
+        //for(i = 0; i < shrine.numOutPuts)//TODO:Position multiple slots
+        addSlotToContainer(new SlotShrineCrafting(inventory.player, craftMatrix, craftResult, 0, 124, 35));//Output slots 10 -> (9+numOutputs)
 
         for(i = 0; i < 3; i++)
         {
@@ -79,17 +79,17 @@ public class ContainerAltar extends Container
     	{
 			if(inventory == craftMatrix)
 			{
-				altar.updateSlots(this);
+				shrine.updateSlots(this);
 			}
-			IAltarRecipe recipe = AltarRecipes.getInstance().findMatchingRecipe(craftMatrix, player);
-		    craftResult.setRecipe(recipe, craftMatrix, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, altar.getWorldObj()));
+			IShrineRecipe recipe = ShrineRecipes.getInstance().findMatchingRecipe(craftMatrix, player);
+		    craftResult.setRecipe(recipe, craftMatrix, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, shrine.getWorldObj()));
     	}
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return altar.isUseableByPlayer(player);
+        return shrine.isUseableByPlayer(player);
     }
 
     /**
@@ -116,9 +116,9 @@ public class ContainerAltar extends Container
             }
             else if(slotIndex >= 10)//Not Input or Ichor
             {
-            	for(int i = 0; i < altar.getSizeInventory(); i++)
+            	for(int i = 0; i < shrine.getSizeInventory(); i++)
             	{
-            		if(altar.isItemValidForSlot(i, itemstack1) && !mergeItemStack(itemstack1, i, i, false))
+            		if(shrine.isItemValidForSlot(i, itemstack1) && !mergeItemStack(itemstack1, i, i, false))
 	            	{
 	            		return null;
 	            	}
